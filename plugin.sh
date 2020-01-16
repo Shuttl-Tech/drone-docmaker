@@ -4,7 +4,7 @@ set -e
 
 die() { echo "$1"; exit 1; }
 
-src_dir="${PLUGIN_SOURCE_DIR:-docs}"
+src_dir="${PLUGIN_SOURCE_DIR:-./}"
 iam_role="${PLUGIN_IAM_ROLE_ARN:-NONE}"
 
 [ -n "${PLUGIN_AWS_REGION}" ] && export AWS_REGION="${PLUGIN_AWS_REGION}" AWS_DEFAULT_REGION="${PLUGIN_AWS_REGION}"
@@ -13,7 +13,8 @@ iam_role="${PLUGIN_IAM_ROLE_ARN:-NONE}"
 [ -z "${PLUGIN_SITE_PATH}" ] && die "site path is not set"
 
 cd "${src_dir}"
-mkdocs build --clean --site-dir _build
+build_dir=$(mktemp -p "${PWD}" -d _site-XXXXXX)
+mkdocs build --clean --site-dir "${build_dir}"
 
 if [ "${iam_role}" != "NONE" ]; then
   aws sts assume-role  \
@@ -24,4 +25,4 @@ if [ "${iam_role}" != "NONE" ]; then
   . /tmp/aws-creds
 fi
 
-aws s3 sync --delete ./_build/ "s3://${PLUGIN_BUCKET}/${PLUGIN_SITE_PATH}/"
+aws s3 sync --delete "${build_dir}" "s3://${PLUGIN_BUCKET}/${PLUGIN_SITE_PATH}/"
