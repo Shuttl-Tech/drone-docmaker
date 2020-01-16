@@ -17,7 +17,7 @@ steps:
       bucket: s3.bucket.name
       site_path: docs/project
       source_dir: docs
-      iam_role: arn:aws:iam::1234567890:role/RoleWithS3PutObjectPermissions
+      iam_role_arn: arn:aws:iam::1234567890:role/RoleWithS3PutObjectPermissions
       aws_region: us-east-1
 ```
 
@@ -30,7 +30,7 @@ Following configuration options are available:
 | `bucket` |  Yes | Name of the S3 bucket where the site will be uploaded |
 | `site_path` |  Yes | S3 file path prefix where the site will be uploaded. Do not add leading or trailing slashes |
 | `source_dir` |  No | Directory that contains the source files for site generation. Defaults to `docs` |
-| `iam_role` |  No | ARN of the IAM role to assume. Used for S3 file sync |
+| `iam_role_arn` |  No | ARN of the IAM role to assume. Used for S3 file sync |
 | `aws_region` |  No | AWS region name used by aws-cli commands |
 
 Note that if you use an iam role to acquire credentials for S3, the drone agent EC2 role must have permission to assume the configured role.
