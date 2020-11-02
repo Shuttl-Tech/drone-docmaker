@@ -32,6 +32,7 @@ Following configuration options are available:
 | `source_dir` |  No | Directory that contains the source files for site generation. Defaults to `docs` |
 | `iam_role_arn` |  No | ARN of the IAM role to assume. Used for S3 file sync |
 | `aws_region` |  No | AWS region name used by aws-cli commands |
+| `site_generation` |  No | `true` if you want to generate html files from markdown files, `false` if the source files are already html. Defaults to `true`  |
 
 Note that if you use an iam role to acquire credentials for S3, the drone agent EC2 role must have permission to assume the configured role.
 
