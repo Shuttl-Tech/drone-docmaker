@@ -6,15 +6,23 @@ die() { echo "$1"; exit 1; }
 
 src_dir="${PLUGIN_SOURCE_DIR:-./}"
 iam_role="${PLUGIN_IAM_ROLE_ARN:-NONE}"
+site_generation="${PLUGIN_SITE_GENERATION:-true}" 
 
 [ -n "${PLUGIN_AWS_REGION}" ] && export AWS_REGION="${PLUGIN_AWS_REGION}" AWS_DEFAULT_REGION="${PLUGIN_AWS_REGION}"
 
 [ -z "${PLUGIN_BUCKET}" ] && die "bucket name is not set"
 [ -z "${PLUGIN_SITE_PATH}" ] && die "site path is not set"
 
-cd "${src_dir}"
-build_dir=$(mktemp -p "${PWD}" -d _site-XXXXXX)
-mkdocs build --clean --site-dir "${build_dir}"
+if [ "${site_generation}" = "true" ]; then
+  cd "${src_dir}"
+  build_dir=$(mktemp -p "${PWD}" -d _site-XXXXXX)
+  mkdocs build --clean --site-dir "${build_dir}"  
+fi
+
+if [ "${site_generation}" = "false" ]; then
+  build_dir=$(mktemp -p "/tmp" -d _site-XXXXXX)
+  cp -a "${src_dir}"/. "${build_dir}"  
+fi
 
 if [ "${iam_role}" != "NONE" ]; then
   aws sts assume-role  \
